@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teacher's Map</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+<h1>Teacher Monitoring Dashboard</h1>
+<div id="clock"></div>
+<input type="text" id="searchBar" placeholder="Search teacher...">
+</header>
+
+<div class="teacher-grid" id="teacherGrid"></div>
+
+<div class="admin-section">
+<button id="adminLoginBtn">Admin Login</button>
+<button id="logoutBtn" style="display:none;">Logout</button>
+<button class="admin-only" onclick="openAdd()">+ Add Teacher</button>
+</div>
+
+<!-- PROFILE MODAL -->
+<div class="modal" id="profileModal">
+<div class="modal-content">
+<h2 id="profileName"></h2>
+<img id="profilePhoto" class="profile-img" alt="Teacher Photo">
+<br>
+<button onclick="viewSchedule()">View Schedule</button>
+<br><br>
+<div class="admin-only">
+<input type="file" id="changePhoto" accept="image/*">
+<button onclick="changePhoto()">Upload Photo</button>
+<br><br>
+<input type="file" id="scheduleUpload" accept="image/*">
+<button onclick="uploadSchedule()">Upload Schedule</button>
+<br><br>
+<button onclick="editTeacher()">Edit Name</button>
+<button class="delete" onclick="deleteTeacher()">Delete</button>
+</div>
+<br>
+<button onclick="closeProfile()">Close</button>
+</div>
+</div>
+
+<!-- SCHEDULE VIEWER -->
+<div id="scheduleViewer">
+<img id="scheduleFull" alt="Schedule">
+</div>
+
+<!-- ADD TEACHER MODAL -->
+<div class="modal" id="addModal">
+<div class="modal-content">
+<h2>Add Teacher</h2>
+<input type="text" id="teacherName" placeholder="Teacher Name">
+<br><br>
+<input type="file" id="teacherPhoto" accept="image/*">
+<br><br>
+<button onclick="saveTeacher()">Save</button>
+<button onclick="closeAdd()">Cancel</button>
+</div>
+</div>
+
+<!-- ADMIN LOGIN MODAL -->
+<div class="modal" id="loginModal">
+<div class="modal-content">
+<h2>Admin Login</h2>
+<input type="password" id="adminPass" placeholder="Password">
+<br><br>
+<button onclick="loginAdmin()">Login</button>
+<button onclick="closeLogin()">Cancel</button>
+</div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
