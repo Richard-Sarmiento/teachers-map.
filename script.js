@@ -2,45 +2,48 @@ const ADMIN_PASSWORD = "admin123";
 let isAdmin = false;
 let selected = null;
 
+// Default teachers with their uploaded photos in the same repo
 let defaultTeachers = [
-"Kae P. Dilla","Anna Lea Casela","Azenith Recile","Laine Veron",
-"Jaime Castro","Rosavilla Galang Aquino","Reyna Mantala","Maria Cristina Cuevas"
+  { name: "Kae P. Dilla", photo: "kae.png", schedule: "schedule.png" },
+  { name: "Anna Lea Casela", photo: "anna.png", schedule: "schedule.png" },
+  { name: "Azenith Recile", photo: "azenith.png", schedule: "schedule.png" },
+  { name: "Laine Veron", photo: "laine.png", schedule: "schedule.png" },
+  { name: "Jaime Castro", photo: "jaime.png", schedule: "schedule.png" },
+  { name: "Rosavilla Galang Aquino", photo: "rosavilla.png", schedule: "schedule.png" },
+  { name: "Reyna Mantala", photo: "reyna.png", schedule: "schedule.png" },
+  { name: "Maria Cristina Cuevas", photo: "maria.png", schedule: "schedule.png" }
 ];
 
 let teachers = JSON.parse(localStorage.getItem("teachers"));
 if(!teachers){
-    teachers = defaultTeachers.map(name=>({name:name,photo:null,schedule:null}));
+    teachers = defaultTeachers;
     saveTeachers();
 }
 
-const grid=document.getElementById("teacherGrid");
+const grid = document.getElementById("teacherGrid");
 
-// --- RENDER GRID ---
+// Render Grid
 function render(){
-    grid.innerHTML="";
-    let search=document.getElementById("searchBar").value.toLowerCase();
-
+    grid.innerHTML = "";
+    let search = document.getElementById("searchBar").value.toLowerCase();
     teachers.sort((a,b)=>a.name.localeCompare(b.name)).forEach((t,i)=>{
         if(!t.name.toLowerCase().includes(search)) return;
-        let div=document.createElement("div");
-        div.className="teacher";
-        let initials=t.name.split(' ').map(n=>n[0]).join('').toUpperCase().substring(0,2);
-        let imgSrc=t.photo ? t.photo : `https://ui-avatars.com/api/?name=${initials}&background=random&color=fff`;
-        div.innerHTML=`<img src="${imgSrc}" alt="${t.name}"><div class="teacher-name">${t.name}</div>`;
-        div.onclick=()=>openProfile(i);
+        let div = document.createElement("div");
+        div.className = "teacher";
+        let imgSrc = t.photo ? t.photo : `https://ui-avatars.com/api/?name=${t.name}&background=random&color=fff`;
+        div.innerHTML = `<img src="${imgSrc}" alt="${t.name}"><div class="teacher-name">${t.name}</div>`;
+        div.onclick = ()=>openProfile(i);
         grid.appendChild(div);
     });
 }
 
-// --- LOCAL STORAGE ---
-function saveTeachers(){
-    localStorage.setItem("teachers",JSON.stringify(teachers));
-}
+// Local Storage
+function saveTeachers(){ localStorage.setItem("teachers",JSON.stringify(teachers)); }
 
-// --- ADMIN LOGIN ---
+// Admin Login
 function loginAdmin(){
-    let pass=document.getElementById("adminPass").value;
-    if(pass===ADMIN_PASSWORD){
+    let pass = document.getElementById("adminPass").value;
+    if(pass === ADMIN_PASSWORD){
         isAdmin=true;
         document.querySelectorAll(".admin-only").forEach(e=>e.style.display="block");
         document.getElementById("loginModal").style.display="none";
@@ -51,7 +54,6 @@ function loginAdmin(){
     } else alert("Incorrect password");
 }
 function closeLogin(){document.getElementById("loginModal").style.display="none";}
-
 document.getElementById("logoutBtn").onclick=()=>{
     isAdmin=false;
     document.querySelectorAll(".admin-only").forEach(e=>e.style.display="none");
@@ -60,58 +62,52 @@ document.getElementById("logoutBtn").onclick=()=>{
 };
 document.getElementById("adminLoginBtn").onclick=()=>{document.getElementById("loginModal").style.display="flex";};
 
-// --- PROFILE ---
+// Profile
 function openProfile(i){
     selected=i;
     document.getElementById("profileModal").style.display="flex";
-    document.getElementById("profileName").innerText=teachers[i].name;
-    const img=document.getElementById("profilePhoto");
-    img.src="";
-    img.src=teachers[i].photo ? teachers[i].photo : "https://via.placeholder.com/120";
+    document.getElementById("profileName").innerText = teachers[i].name;
+    const img = document.getElementById("profilePhoto");
+    img.src = teachers[i].photo ? teachers[i].photo : "https://via.placeholder.com/120";
 }
 function closeProfile(){document.getElementById("profileModal").style.display="none";}
 
-// --- CHANGE PHOTO ---
+// Change Photo
 function changePhoto(){
-    const fileInput=document.getElementById("changePhoto");
-    const file=fileInput.files[0];
+    const fileInput = document.getElementById("changePhoto");
+    const file = fileInput.files[0];
     if(!file) return alert("Select a photo first");
-
-    const reader=new FileReader();
-    reader.onload=function(e){
-        teachers[selected].photo=e.target.result;
-        const img=document.getElementById("profilePhoto");
-        img.src=""; img.src=e.target.result;
-        render();
-        fileInput.value=null;
-        try{saveTeachers();} catch(e){alert("Photo too large.");}
+    const reader = new FileReader();
+    reader.onload = function(e){
+        teachers[selected].photo = e.target.result;
+        document.getElementById("profilePhoto").src = e.target.result;
+        render(); fileInput.value=null; saveTeachers();
     };
     reader.readAsDataURL(file);
 }
 
-// --- SCHEDULE ---
+// Upload Schedule
 function uploadSchedule(){
     const file=document.getElementById("scheduleUpload").files[0];
     if(!file) return alert("No file selected");
     const reader=new FileReader();
     reader.onload=function(e){
-        teachers[selected].schedule=e.target.result;
-        saveTeachers();
-        alert("Schedule uploaded");
+        teachers[selected].schedule = e.target.result;
+        saveTeachers(); alert("Schedule uploaded");
     };
     reader.readAsDataURL(file);
 }
 
 function viewSchedule(){
-    const sched=teachers[selected].schedule;
+    const sched = teachers[selected].schedule;
     if(!sched) return alert("No schedule uploaded");
-    const viewer=document.getElementById("scheduleViewer");
+    const viewer = document.getElementById("scheduleViewer");
     viewer.style.display="flex";
-    document.getElementById("scheduleFull").src=sched;
+    document.getElementById("scheduleFull").src = sched;
 }
-document.getElementById("scheduleViewer").onclick=()=>{document.getElementById("scheduleViewer").style.display="none";};
+document.getElementById("scheduleViewer").onclick = ()=>{document.getElementById("scheduleViewer").style.display="none";};
 
-// --- ADD / EDIT / DELETE ---
+// Add / Edit / Delete
 function openAdd(){document.getElementById("addModal").style.display="flex";}
 function closeAdd(){document.getElementById("addModal").style.display="none";}
 function saveTeacher(){
@@ -125,9 +121,10 @@ function saveTeacher(){
             saveTeachers(); render(); closeAdd();
         };
         reader.readAsDataURL(file);
-    } else {teachers.push({name:name,photo:null,schedule:null}); saveTeachers(); render(); closeAdd();}
+    } else {
+        teachers.push({name:name,photo:null,schedule:null}); saveTeachers(); render(); closeAdd();
+    }
 }
-
 function editTeacher(){
     let n=prompt("New name:",teachers[selected].name);
     if(n){teachers[selected].name=n; saveTeachers(); render(); document.getElementById("profileName").innerText=n;}
@@ -136,10 +133,8 @@ function deleteTeacher(){
     if(confirm("Delete this teacher?")){teachers.splice(selected,1); saveTeachers(); render(); closeProfile();}
 }
 
-// --- SEARCH ---
+// Search & Clock
 document.getElementById("searchBar").oninput=render;
+setInterval(()=>{document.getElementById("clock").innerText=new Date().toLocaleString();},1000);
 
-// --- CLOCK ---
-function startClock(){setInterval(()=>{document.getElementById("clock").innerText=new Date().toLocaleString();},1000);}
-startClock();
 render();
